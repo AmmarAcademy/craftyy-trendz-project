@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Craftyy Trendz - Contact Us</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <h1>Contact</h1>
+    </div>
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">All Products</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li class="search-group">
+          <input type="text" id="searchInput" placeholder="Search products..." oninput="filterProducts()" />
+          <button class="nav-btn" onclick="searchProducts()">🔍</button>
+        </li>
+                <li>
+            <a href="cart.html" class="nav-btn">
+                🛒 Cart <span id="cart-count" style="background: red; color: white; padding: 2px 6px; border-radius: 50%; font-size: 12px; margin-left: 5px;">0</span>
+            </a>
+        </li>
+        <li><a href="admin.html" class="nav-btn">👤 Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="contact-section">
+      <h2>Get in Touch with Us</h2>
+      <form id="contactForm" onsubmit="submitToWhatsApp(event)">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" required />
+
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" required />
+
+        <label for="message">Your Message:</label>
+        <textarea id="message" name="message" required></textarea>
+
+        <button type="submit">Send via WhatsApp</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; @ 2025 Craftyy Trendz. All rights reserved. | Developer: mohammadammar7406@gmail.com</p>
+      <div class="social-media">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function searchProducts() {
+      const input = document.getElementById("searchInput").value.trim();
+      if (input) {
+        window.location.href = `products.html?search=${encodeURIComponent(input)}`;
+      }
+    }
+
+    function filterProducts() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const products = document.querySelectorAll(".product");
+
+      products.forEach(product => {
+        const name = product.querySelector("h3").textContent.toLowerCase();
+        const category = product.getAttribute("data-category")?.toLowerCase() || "";
+        const match = name.includes(input) || category.includes(input);
+        product.style.display = match ? "block" : "none";
+      });
+    }
+
+    function submitToWhatsApp(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const subject = document.getElementById("subject").value.trim();
+    const message = document.getElementById("message").value.trim();
+
+    if (!name || !email || !phone || !subject || !message) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    const formData = { name, email, phone, subject, message };
+
+    // Step 1: Send to backend API
+    fetch('/api/contacts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Failed to send message. Please try again later.");
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          // Step 2: Open WhatsApp after backend success
+          const fullMessage =
+            `📩 *New Contact Query*:\n\n` +
+            `👤 Name: ${name}\n` +
+            `📧 Email: ${email}\n` +
+            `📱 Phone: ${phone}\n` +
+            `📌 Subject: ${subject}\n` +
+            `📝 Message: ${message}`;
+
+          const encodedMessage = encodeURIComponent(fullMessage);
+          const whatsappNumber = "918884637866";
+          const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
+          window.open(whatsappURL, "_blank");
+
+          // Optional: Clear form
+          document.getElementById("contactForm").reset();
+        } else {
+          alert("Something went wrong. Please try again.");
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert(error.message || "An unexpected error occurred.");
+      });
+  }
+
+  // Run on page load
+  updateCartCount();
+
+  </script>
+</body>
+</html>

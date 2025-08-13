@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Craftyy Trendz - Categories</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="categories.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="images/logo.jpg" alt="Craftyy Trendz Logo" />
+      </a>
+      <h2>THE CRAFTYY TRENDZ</h2>
+    </div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <nav id="mobile-nav">
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-btn">Home</a></li>
+        <li><a href="products.html" class="nav-btn">All Products</a></li>
+        <li><a href="categories.html" class="nav-btn">Categories</a></li>
+        <li><a href="contact.html" class="nav-btn">Contact Us</a></li>
+        <li class="search-group">
+          <input type="text" id="searchInput" placeholder="Search products..." />
+          <button onclick="searchProducts()">🔍</button>
+        </li>
+        <li>
+          <a href="cart.html" class="nav-btn">
+            🛒 Cart <span id="cart-count">0</span>
+          </a>
+        </li>
+        <li><a href="admin.html" class="nav-btn">👤 Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2 style="text-align: center; margin-top: 20px;">Shop by Category</h2>
+    <div class="category-scroll-container">
+      <div class="category-grid" id="categoryContainer"></div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Craftyy Trendz. All rights reserved. | Developer: mohammadammar7406@gmail.com</p>
+      <div class="social-media">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById("mobile-nav");
+      nav.classList.toggle("active");
+    }
+
+    document.addEventListener("click", function (event) {
+      const menu = document.getElementById("mobile-nav");
+      const toggleBtn = document.querySelector(".menu-toggle");
+
+      const isClickInsideMenu = menu.contains(event.target);
+      const isClickOnToggle = toggleBtn.contains(event.target);
+
+      if (!isClickInsideMenu && !isClickOnToggle && menu.classList.contains("active")) {
+        menu.classList.remove("active");
+      }
+    });
+
+    document.addEventListener("click", function(e) {
+      const nav = document.getElementById("mobile-nav");
+      const toggle = document.querySelector(".menu-toggle");
+      if (!nav.contains(e.target) && !toggle.contains(e.target)) {
+        nav.classList.remove("active");
+      }
+    });
+
+    function searchProducts() {
+      const input = document.getElementById("searchInput").value.trim();
+      if (input) {
+        window.location.href = `products.html?search=${encodeURIComponent(input)}`;
+      }
+    }
+
+    document.getElementById("searchInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        searchProducts();
+      }
+    });
+
+    async function loadCategoriesFromAPI() {
+      const container = document.getElementById("categoryContainer");
+      try {
+        const res = await fetch('/api/categories');
+        const categories = await res.json();
+
+        if (!categories.length) {
+          container.innerHTML = "<p style='text-align:center;'>No categories found.</p>";
+          return;
+        }
+
+        container.innerHTML = categories.map(cat => `
+          <div class="category-card" onclick="goToCategory('${cat.Name}')">
+            <img src="${cat.ImageURL}" alt="${cat.Name}">
+            <p>${cat.Name}</p>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+        container.innerHTML = "<p style='text-align:center; color:red;'>Failed to load categories.</p>";
+      }
+    }
+
+    function goToCategory(categoryName) {
+      window.location.href = `products.html?category=${encodeURIComponent(categoryName)}`;
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const cartCount = document.getElementById("cart-count");
+      if (cartCount) cartCount.textContent = count;
+    }
+
+    window.onload = () => {
+      loadCategoriesFromAPI();
+      updateCartCount();
+    };
+  </script>
+</body>
+</html>

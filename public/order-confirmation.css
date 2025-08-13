@@ -1,0 +1,65 @@
+.confirmation-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.confirmation-container h1 {
+  color: #4CAF50;
+}
+
+.confirmation-container h2 {
+  margin: 20px 0;
+  color: #241b1b;
+}
+
+.confirmation-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.confirmation-container li {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.confirmation-container p {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.whatsapp-btn,
+.back-btn {
+  display: inline-block;
+  margin: 10px;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.whatsapp-btn {
+  background-color: #25D366;
+  color: white;
+}
+
+.back-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.whatsapp-btn:hover {
+  background-color: #1ebe5d;
+}
+
+.back-btn:hover {
+  background-color: #3a963f;
+}

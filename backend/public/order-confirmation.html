@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Confirmed</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .confirmation-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: #f9f9f9;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+    .confirmation-container h1 {
+      color: #4CAF50;
+    }
+    .confirmation-container ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+    .confirmation-container li {
+      margin-bottom: 8px;
+    }
+    .whatsapp-btn,
+    .back-btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .whatsapp-btn {
+      background-color: #25D366;
+      color: white;
+    }
+    .back-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .whatsapp-btn:hover {
+      background-color: #1ebe5d;
+    }
+    .back-btn:hover {
+      background-color: #3a963f;
+    }
+  </style>
+</head>
+<body>
+  <div class="confirmation-container">
+    <h1>🎉 Order Placed Successfully!</h1>
+    <div id="order-details"></div>
+    <a id="whatsapp-link" class="whatsapp-btn" target="_blank">Message on WhatsApp</a>
+    <a href="index.html" class="back-btn">Continue Shopping</a>
+  </div>
+
+  <script>
+    const orderData = JSON.parse(sessionStorage.getItem('lastOrder'));
+    const detailsDiv = document.getElementById('order-details');
+
+    if (!orderData) {
+      detailsDiv.innerHTML = "<p>No order data found.</p>";
+    } else {
+      const { customer, cart } = orderData;
+      let message = `Hi Craftyy Trendz! I placed an order:\n`;
+      let html = `<h2>Order Summary</h2><ul>`;
+
+      cart.forEach(item => {
+        message += `\n• ${item.name} (x${item.quantity}) - ₹${item.price * item.quantity}\n`;
+        html += `<li>${item.name} (x${item.quantity}) - ₹${item.price * item.quantity}</li>`;
+      });
+
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      message += `\nTotal: ₹${total}\n`;
+      message += `\nName: ${customer.name}\n`;
+      message += `Address: ${customer.address}, ${customer.landmark}, ${customer.city} - ${customer.pincode}\n`;
+      message += `Phone: ${customer.phone}\n`;
+      message += `Email: ${customer.email}`;
+
+      html += `</ul><p><strong>Total:</strong> ₹${total}</p>`;
+      html += `<p><strong>Shipping to:</strong><br> 
+        ${customer.name}<br>
+        ${customer.address}, ${customer.landmark}, ${customer.city} - ${customer.pincode}<br>
+        Phone: ${customer.phone}<br>
+        Email: ${customer.email}
+      </p>`;
+
+      detailsDiv.innerHTML = html;
+
+      document.getElementById("whatsapp-link").href =
+        `https://api.whatsapp.com/send?phone=918884637866&text=${encodeURIComponent(message)}`;
+    }
+
+    localStorage.removeItem('cart');
+    sessionStorage.removeItem('lastOrder');
+  </script>
+</body>
+</html>

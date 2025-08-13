@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Craftyy Trendz - All Products</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="products.css">
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="images/logo.jpg" alt="Craftyy Trendz Logo" />
+      </a>
+      <h2>THE CRAFTYY TRENDZ</h2>
+    </div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <nav id="mobile-nav">
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-btn">Home</a></li>
+        <li><a href="products.html" class="nav-btn">All Products</a></li>
+        <li><a href="categories.html" class="nav-btn">Categories</a></li>
+        <li><a href="contact.html" class="nav-btn">Contact Us</a></li>
+        <li class="search-group">
+          <input type="text" id="searchInput" placeholder="Search products..." />
+          <button onclick="searchProducts()">🔍</button>
+        </li>
+        <li>
+          <a href="cart.html" class="nav-btn">
+            🛒 Cart <span id="cart-count">0</span>
+          </a>
+        </li>
+        <li><a href="admin.html" class="nav-btn">👤 Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="scrollable-area">
+      <h2 id="productHeading">Our Products</h2>
+      <div class="product-grid" id="productContainer"></div>
+      <div class="center-link">
+        <a href="products.html" class="view-all-btn">← Show All Products</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Craftyy Trendz. All rights reserved. | Developer: mohammadammar7406@gmail.com</p>
+      <div class="social-media">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById("mobile-nav");
+      nav.classList.toggle("active");
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener("click", function (event) {
+      const menu = document.getElementById("mobile-nav");
+      const toggleBtn = document.querySelector(".menu-toggle");
+
+      const isClickInsideMenu = menu.contains(event.target);
+      const isClickOnToggle = toggleBtn.contains(event.target);
+
+      if (!isClickInsideMenu && !isClickOnToggle && menu.classList.contains("active")) {
+        menu.classList.remove("active");
+      }
+    });
+
+    let allProducts = [];
+
+    function getQueryParam(key) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(key)?.toLowerCase() || "";
+    }
+
+    async function fetchProducts() {
+      try {
+        const res = await fetch('/api/products');
+        allProducts = await res.json();
+
+        const searchQuery = getQueryParam("search");
+        const categoryFilter = getQueryParam("category");
+
+        if (searchQuery) {
+          document.getElementById("searchInput").value = searchQuery;
+          filterAndRender(searchQuery);
+          updateHeading(`Search: ${searchQuery}`);
+        } else if (categoryFilter) {
+          filterByCategory(categoryFilter);
+          updateHeading(`Category: ${categoryFilter}`);
+        } else {
+          renderProducts(allProducts);
+        }
+      } catch (err) {
+        console.error("Error loading products:", err);
+        document.getElementById("productContainer").innerHTML = "<p style='text-align:center;'>Failed to load products.</p>";
+      }
+    }
+
+    function renderProducts(products) {
+      const container = document.getElementById("productContainer");
+      if (!products || products.length === 0) {
+        container.innerHTML = "<p style='text-align:center;'>No products found.</p>";
+        return;
+      }
+
+      container.innerHTML = products.map(p => `
+        <div class="product-card product" data-name="${p.Name}" data-price="${p.Price}" data-category="${p.Category || ''}">
+          <img src="${p.ImageURL}" alt="${p.Name}" onerror="this.src='images/default.jpg';" />
+          <h3>${p.Name}</h3>
+          <p>Category: ${p.Category || 'N/A'}</p>
+          <p>Price: ₹${p.Price}</p>
+          <button onclick="addToCart(this)">Add to Cart</button>
+        </div>
+      `).join('');
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById("cart-count").textContent = count;
+    }
+
+    function searchProducts() {
+      const input = document.getElementById("searchInput").value.trim();
+      if (input) {
+        window.location.href = `products.html?search=${encodeURIComponent(input)}`;
+      }
+    }
+
+    function filterAndRender(query) {
+      const filtered = allProducts.filter(p =>
+        p.Name.toLowerCase().includes(query) ||
+        (p.Category && p.Category.toLowerCase().includes(query))
+      );
+      renderProducts(filtered);
+    }
+
+    function filterByCategory(category) {
+      const filtered = allProducts.filter(p =>
+        p.Category && p.Category.toLowerCase() === category
+      );
+      renderProducts(filtered);
+    }
+
+    function updateHeading(text) {
+      document.getElementById("productHeading").textContent = text;
+    }
+
+    function addToCart(button) {
+      const productDiv = button.closest('.product');
+      const name = productDiv.getAttribute('data-name');
+      const price = parseFloat(productDiv.getAttribute('data-price'));
+      const image = productDiv.querySelector('img')?.getAttribute('src') || 'images/default.jpg';
+
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const existing = cart.find(item => item.name === name);
+
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ name, price, image, quantity: 1 });
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert(`${name} added to cart!`);
+      updateCartCount();
+    }
+
+    window.onload = () => {
+      updateCartCount();
+      fetchProducts();
+
+      const input = document.getElementById("searchInput");
+      input.addEventListener("input", () => {
+        filterAndRender(input.value.trim().toLowerCase());
+      });
+
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          searchProducts();
+        }
+      });
+    };
+  </script>
+</body>
+</html>

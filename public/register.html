@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register Admin</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="register.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <a href="index.html"><img src="images/logo.jpg" alt="Craftyy Trendz Logo" /></a>
+      <h2>THE CRAFTYY TRENDZ</h2>
+    </div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div id="mobile-nav">
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-btn">Home</a></li>
+        <li><a href="products.html" class="nav-btn">All Products</a></li>
+        <li><a href="categories.html" class="nav-btn">Categories</a></li>
+        <li><a href="contact.html" class="nav-btn">Contact Us</a></li>
+        <li class="search-group">
+          <input type="text" id="searchInput" placeholder="Search products..." />
+          <button onclick="searchProducts()">🔍</button>
+        </li>
+        <li><a href="cart.html" class="nav-btn">🛒 Cart <span id="cart-count">0</span></a></li>
+        <li><a href="admin.html" class="nav-btn">👤 Admin</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <div class="register-container">
+      <h2>Register New Admin</h2>
+      <form id="registerForm">
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Register</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Craftyy Trendz. All rights reserved. | Developer: mohammadammar7406@gmail.com</p>
+      <div class="social-media">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      try {
+        const response = await fetch('/api/admin/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert('✅ Registered successfully!');
+          // window.location.href = "admin.html";
+        } else {
+          alert(`❌ Error: ${data.message}`);
+        }
+      } catch (err) {
+        alert('❌ Network error');
+        console.error('Register Error:', err);
+      }
+    });
+
+    function toggleMenu() {
+      const nav = document.getElementById("mobile-nav");
+      nav.classList.toggle("active");
+    }
+
+    function searchProducts() {
+      const input = document.getElementById("searchInput").value.trim();
+      if (input) {
+        window.location.href = `products.html?search=${encodeURIComponent(input)}`;
+      }
+    }
+
+    document.getElementById("searchInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        searchProducts();
+      }
+    });
+
+    window.addEventListener("click", function (e) {
+      const nav = document.getElementById("mobile-nav");
+      if (nav.classList.contains("active") &&
+          !nav.contains(e.target) &&
+          !e.target.classList.contains("menu-toggle")) {
+        nav.classList.remove("active");
+      }
+    });
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    document.getElementById("cart-count").textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+  </script>
+</body>
+</html>

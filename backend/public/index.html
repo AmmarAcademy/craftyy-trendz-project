@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Craftyy Trendz</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <div class="logo" style="display: flex; align-items: center;">
+      <a href="index.html">
+        <img src="images/logo.jpg" alt="Craftyy Trendz Logo" style="height: 100px;" />
+      </a>
+      <h2 style="margin-left: 15px;">THE CRAFTYY TRENDZ</h2>
+    </div>
+
+
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="products.html">All Products</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li class="search-group">
+          <input type="text" id="searchInput" placeholder="Search products..." />
+          <button class="nav-btn" onclick="searchProducts()">🔍</button>
+        </li>
+        <li>
+          <a href="cart.html" class="nav-btn">
+            🛒 Cart <span id="cart-count">0</span>
+          </a>
+        </li>
+        <li><a href="admin.html" class="nav-btn">👤 Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="hero-section">
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Craftyy Trendz. All rights reserved. | Developer: mohammadammar7406@gmail.com</p>
+      <div class="social-media">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Track visitor when page loads
+    fetch('/api/visitors', {
+      method: 'POST'
+    }).catch(err => console.error('Visitor track error:', err));
+
+    // Update cart count
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const cartCount = document.getElementById("cart-count");
+      if (cartCount) cartCount.textContent = count;
+    }
+    updateCartCount();
+
+    // Background image slideshow
+    const hero = document.getElementById("hero-section");
+    const bgImages = [
+      "images/bg1.jpg",
+      "images/bg2.jpg",
+      "images/bg3.jpg",
+      "images/bg4.jpg"
+    ];
+    let current = 0;
+    function changeBackground() {
+      hero.style.backgroundImage = `url('${bgImages[current]}')`;
+      current = (current + 1) % bgImages.length;
+    }
+    changeBackground();
+    setInterval(changeBackground, 5000);
+
+    // Search function (redirects to products.html)
+    function searchProducts() {
+      const input = document.getElementById("searchInput").value.trim();
+      if (input) {
+        window.location.href = `products.html?search=${encodeURIComponent(input)}`;
+      }
+    }
+
+    // Enable Enter key to trigger search
+    document.getElementById("searchInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        searchProducts();
+      }
+    });
+  </script>
+</body>
+</html>

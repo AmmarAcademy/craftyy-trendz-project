@@ -1,0 +1,46 @@
+/* categories.css */
+
+/* Scrollable container */
+.category-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Grid for category cards */
+.category-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  padding: 40px 20px;
+  max-width: 1020px;
+  margin: 0 auto;
+}
+
+.category-card {
+  width: 160px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.category-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.category-card p {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.category-card:hover {
+  transform: scale(1.05);
+}

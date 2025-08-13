@@ -1,0 +1,93 @@
+/* Contact Page */
+/* Contact Page Layout */
+.contact-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding: 20px;
+  height: calc(100vh - 147px); /* header + footer height adjustment */
+}
+
+.scrollable-form {
+  width: 100%;
+  max-width: 600px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.scrollable-form input,
+.scrollable-form textarea,
+.scrollable-form button {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.scrollable-form::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable-form::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+.contact-section h2 {
+  text-align: center;
+  color: #887865;
+}
+
+.contact-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-section label {
+  font-weight: 600;
+  color: #333;
+}
+
+.contact-section input,
+.contact-section textarea {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background: #fff;
+  transition: border 0.2s;
+}
+
+.contact-section input:focus,
+.contact-section textarea:focus {
+  border-color: #241b1b;
+  outline: none;
+}
+
+.contact-section textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.contact-section button {
+  background-color: #887865;
+  color: white;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.contact-section button:hover {
+  background-color: #241b1b;
+}

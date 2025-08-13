@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Craftyy Trendz - Contact Us</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="contact.css" />
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="images/logo.jpg" alt="Craftyy Trendz Logo" />
+      </a>
+      <h1>THE CRAFTYY TRENDZ</h1>
+    </div>
+
+    <button class="menu-toggle" id="hamburger">&#9776;</button>
+
+    <nav id="mobile-nav">
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-btn">Home</a></li>
+        <li><a href="products.html" class="nav-btn">All Products</a></li>
+        <li><a href="categories.html" class="nav-btn">Categories</a></li>
+        <li><a href="contact.html" class="nav-btn active">Contact Us</a></li>
+        <li class="search-group">
+          <input type="text" id="searchInput" placeholder="Search products..." />
+          <button onclick="searchProducts()">🔍</button>
+        </li>
+        <li>
+          <a href="cart.html" class="nav-btn">
+            🛒 Cart <span id="cart-count">0</span>
+          </a>
+        </li>
+        <li><a href="admin.html" class="nav-btn">👤 Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="contact-section">
+      <div class="scrollable-form">
+        <h2>Get in Touch with Us</h2>
+        <form id="contactForm" onsubmit="submitToWhatsApp(event)">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required />
+
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+
+          <label for="phone">Phone Number:</label>
+          <input type="tel" id="phone" name="phone" required />
+
+          <label for="subject">Subject:</label>
+          <input type="text" id="subject" name="subject" required />
+
+          <label for="message">Your Message:</label>
+          <textarea id="message" name="message" required></textarea>
+
+          <button type="submit">Send via WhatsApp</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Craftyy Trendz. All rights reserved. | Developer: mohammadammar7406@gmail.com</p>
+      <div class="social-media">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Hamburger toggle
+    const toggleBtn = document.getElementById("hamburger");
+    const nav = document.getElementById("mobile-nav");
+
+    toggleBtn.addEventListener("click", () => {
+      nav.classList.toggle("active");
+    });
+
+    // Close hamburger menu on outside click
+    document.addEventListener("click", function (event) {
+      if (!nav.contains(event.target) && !toggleBtn.contains(event.target)) {
+        nav.classList.remove("active");
+      }
+    });
+
+    function searchProducts() {
+      const input = document.getElementById("searchInput").value.trim();
+      if (input) {
+        window.location.href = `products.html?search=${encodeURIComponent(input)}`;
+      }
+    }
+
+    function submitToWhatsApp(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const subject = document.getElementById("subject").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      if (!name || !email || !phone || !subject || !message) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const formData = { name, email, phone, subject, message };
+
+      fetch('/api/contacts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Failed to send message.");
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          const fullMessage = `📩 *New Contact Query*:\n\n👤 Name: ${name}\n📧 Email: ${email}\n📱 Phone: ${phone}\n📌 Subject: ${subject}\n📝 Message: ${message}`;
+          const encodedMessage = encodeURIComponent(fullMessage);
+          window.open(`https://api.whatsapp.com/send?phone=918884637866&text=${encodedMessage}`, "_blank");
+          document.getElementById("contactForm").reset();
+        } else {
+          alert("Something went wrong.");
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        alert(error.message || "Unexpected error occurred.");
+      });
+    }
+
+    // You can define this to dynamically update cart count
+    function updateCartCount() {
+      const count = localStorage.getItem("cartCount") || 0;
+      document.getElementById("cart-count").innerText = count;
+    }
+
+    updateCartCount();
+  </script>
+</body>
+</html>

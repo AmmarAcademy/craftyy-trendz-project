@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Confirmed</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="order-confirmation.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <a href="index.html"><img src="images/logo.jpg" alt="Logo" /></a>
+      <h2>THE CRAFTYY TRENDZ</h2>
+    </div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div id="mobile-nav">
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-btn">Home</a></li>
+        <li><a href="products.html" class="nav-btn">All Products</a></li>
+        <li><a href="categories.html" class="nav-btn">Categories</a></li>
+        <li><a href="contact.html" class="nav-btn">Contact Us</a></li>
+        <li class="search-group">
+          <input type="text" id="searchInput" placeholder="Search products..." />
+          <button onclick="searchProducts()">🔍</button>
+        </li>
+        <li><a href="cart.html" class="nav-btn">🛒 Cart <span id="cart-count">0</span></a></li>
+        <li><a href="admin.html" class="nav-btn">👤 Admin</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <div class="confirmation-container">
+      <h1>🎉 Order Placed Successfully!</h1>
+      <div id="order-details"></div>
+      <a id="whatsapp-link" class="whatsapp-btn" target="_blank">Message on WhatsApp</a>
+      <a href="index.html" class="back-btn">Continue Shopping</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Craftyy Trendz. All rights reserved. | Developer: mohammadammar7406@gmail.com</p>
+      <div class="social-media">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const orderData = JSON.parse(sessionStorage.getItem('lastOrder'));
+    const detailsDiv = document.getElementById('order-details');
+
+    if (!orderData) {
+      detailsDiv.innerHTML = "<p>No order data found.</p>";
+    } else {
+      const { customer, cart } = orderData;
+      let message = `Hi Craftyy Trendz! I placed an order:\n`;
+      let html = `<h2>Order Summary</h2><ul>`;
+
+      cart.forEach(item => {
+        message += `\n• ${item.name} (x${item.quantity}) - ₹${item.price * item.quantity}\n`;
+        html += `<li>${item.name} (x${item.quantity}) - ₹${item.price * item.quantity}</li>`;
+      });
+
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      message += `\nTotal: ₹${total}\n`;
+      message += `\nName: ${customer.name}\n`;
+      message += `Address: ${customer.address}, ${customer.landmark}, ${customer.city} - ${customer.pincode}\n`;
+      message += `Phone: ${customer.phone}\n`;
+      message += `Email: ${customer.email}`;
+
+      html += `</ul><p><strong>Total:</strong> ₹${total}</p>`;
+      html += `<p><strong>Shipping to:</strong><br> 
+        ${customer.name}<br>
+        ${customer.address}, ${customer.landmark}, ${customer.city} - ${customer.pincode}<br>
+        Phone: ${customer.phone}<br>
+        Email: ${customer.email}
+      </p>`;
+
+      detailsDiv.innerHTML = html;
+
+      document.getElementById("whatsapp-link").href =
+        `https://api.whatsapp.com/send?phone=918884637866&text=${encodeURIComponent(message)}`;
+    }
+
+    localStorage.removeItem('cart');
+    sessionStorage.removeItem('lastOrder');
+
+    function toggleMenu() {
+      const nav = document.getElementById('mobile-nav');
+      nav.classList.toggle('active');
+    }
+
+    function searchProducts() {
+      const input = document.getElementById("searchInput").value.trim();
+      if (input) {
+        window.location.href = `products.html?search=${encodeURIComponent(input)}`;
+      }
+    }
+
+    document.getElementById("searchInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        searchProducts();
+      }
+    });
+
+    window.addEventListener('click', function (e) {
+      const nav = document.getElementById('mobile-nav');
+      if (nav.classList.contains('active') && !nav.contains(e.target) && !e.target.classList.contains('menu-toggle')) {
+        nav.classList.remove('active');
+      }
+    });
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    document.getElementById("cart-count").textContent = cart.reduce((sum, i) => sum + i.quantity, 0);
+  </script>
+</body>
+</html>

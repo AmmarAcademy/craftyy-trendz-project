@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - Craftyy Trendz</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="images/logo.jpg" alt="Logo" />
+      </a>
+      <h2>THE CRAFTYY TRENDZ</h2>
+    </div>
+
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <nav id="mobile-nav">
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-btn">Home</a></li>
+        <li><a href="products.html" class="nav-btn">All Products</a></li>
+        <li><a href="categories.html" class="nav-btn">Categories</a></li>
+        <li><a href="contact.html" class="nav-btn">Contact Us</a></li>
+        <li class="search-group">
+          <input type="text" id="searchInput" placeholder="Search products..." />
+          <button onclick="searchProducts()">🔍</button>
+        </li>
+        <li><a href="cart.html" class="nav-btn">🛒 Cart <span id="cart-count">0</span></a></li>
+        <li><a href="admin.html" class="nav-btn">👤 Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="admin-section">
+      <div id="adminLoginContainer" class="admin-login-container">
+        <div id="loginBox" class="admin-login">
+          <h2>Admin Login</h2>
+          <form id="adminLoginForm">
+            <input type="text" id="adminUsername" placeholder="Username" required />
+            <input type="password" id="adminPassword" placeholder="Password" required />
+            <p id="loginError" class="error-msg"></p>
+            <button type="submit">Login</button>
+          </form>
+        </div>
+      </div>
+      <div id="adminPannel" class="admin-Pannel hidden">
+        <h2>Welcome, Admin</h2>
+        <div style="text-align: right; margin-bottom: 20px;">
+          <button onclick="toggleSection('registerAdminBox')">➕ Register Admin</button>
+          <button onclick="loadDashboardStats()" class="refresh-btn">🔄 Refresh Dashboard</button>
+        </div>
+        <div id="registerAdminBox" class="toggle-form hidden">
+          <h2>Register New Admin</h2>
+          <form id="registerAdminForm">
+            <input type="text" id="newAdminUsername" placeholder="Username" required />
+            <input type="password" id="newAdminPassword" placeholder="Password" required />
+            <button type="submit">Register</button>
+            <p id="registerAdminMsg" class="success-msg"></p>
+          </form>
+        </div>
+        <div class="admin-dashboard">
+          <div class="card"><h3>Total Products</h3><p id="totalProducts">0</p></div>
+          <div class="card"><h3>Total Categories</h3><p id="totalCategories">0</p></div>
+          <div class="card"><h3>Orders</h3><p id="totalOrders">0</p></div>
+          <div class="card"><h3>Visitors</h3><p id="totalVisitors">0</p></div>
+        </div>
+        <div class="form-toggle">
+          <button onclick="toggleForm('categoryFormBox')">➕ Add/Edit Category</button>
+          <button onclick="toggleForm('productFormBox')">➕ Add/Edit Product</button>
+          <button onclick="toggleSection('manageCategoriesBox')">🗂️ Manage Categories</button>
+          <button onclick="toggleSection('manageProductsBox')">📦 Manage Products</button>
+          <button onclick="toggleSection('orderViewer')">📦 View Orders</button>
+          <button onclick="toggleSection('contactQueriesBox')">📨 View Contact Queries</button>
+          <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+        <div id="orderViewer" class="toggle-form hidden"></div>
+        <div id="contactQueriesBox" class="toggle-form hidden">
+          <h3>Contact Queries</h3>
+          <div id="contactQueriesList">Loading...</div>
+        </div>
+        <div id="categoryFormBox" class="toggle-form hidden">
+          <h3>Add / Edit Category</h3>
+          <form id="categoryForm">
+            <input type="text" id="newCategory" placeholder="Category Name" required />
+            <input type="file" id="newCategoryImageFile" accept="image/*" required />
+            <input type="hidden" id="editingCategoryId" />
+            <button type="submit">Save Category</button>
+            <p id="categoryMsg" class="success-msg"></p>
+          </form>
+        </div>
+        <div id="productFormBox" class="toggle-form hidden">
+          <h3>Add / Edit Product</h3>
+          <form id="productForm">
+            <input type="text" id="prodName" placeholder="Product Name" required />
+            <input type="number" id="prodPrice" placeholder="Price (₹)" required />
+            <div class="styled-select">
+              <select id="prodCategoryDropdown" required>
+                <option value="">-- Select Category --</option>
+              </select>
+            </div>
+            <input type="text" id="customCategoryInput" class="hidden" placeholder="Enter new category" />
+            <input type="file" id="prodImageFile" accept="image/*" required />
+            <input type="hidden" id="editingProductId" />
+            <button type="submit">Save Product</button>
+            <p id="uploadMsg" class="success-msg"></p>
+          </form>
+        </div>
+        <div id="manageCategoriesBox" class="toggle-form hidden">
+          <h3>Manage Categories</h3>
+          <div id="categoryList"></div>
+        </div>
+        <div id="manageProductsBox" class="toggle-form hidden">
+          <h3>Manage Products</h3>
+          <div id="productList"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Craftyy Trendz. All rights reserved. | Developer: mohammadammar7406@gmail.com</p>
+      <div class="social-media">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+
+<script>
+  function toggleMenu() {
+    document.getElementById("mobile-nav").classList.toggle("active");
+  }
+
+  // Close menu when clicking outside
+  document.addEventListener("click", function (event) {
+    const menu = document.getElementById("mobile-nav");
+    const toggle = document.querySelector(".menu-toggle");
+    if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+      menu.classList.remove("active");
+    }
+  });
+
+  // ------------------- Register -------------------
+  document.getElementById('registerAdminForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const username = document.getElementById('newAdminUsername').value.trim();
+    const password = document.getElementById('newAdminPassword').value.trim();
+    const msg = document.getElementById('registerAdminMsg');
+
+    if (!username || !password) {
+      msg.textContent = '❌ Please enter both username and password.';
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        msg.textContent = '✅ Registered successfully!';
+        document.getElementById('registerAdminForm').reset();
+      } else {
+        msg.textContent = `❌ Error: ${data.message}`;
+      }
+    } catch (err) {
+      msg.textContent = '❌ Network error, check console';
+      console.error('Register Error:', err);
+    }
+  });
+
+
+  // ------------------- LOGIN -------------------
+  document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const username = document.getElementById('adminUsername').value.trim();
+  const password = document.getElementById('adminPassword').value.trim();
+  const errorMsg = document.getElementById('loginError');
+
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('loginBox').classList.add('hidden');
+      document.getElementById('adminLoginContainer').classList.add('hidden');
+      document.getElementById('adminPannel').classList.remove('hidden');
+      populateCategoryDropdown();
+      loadDashboardStats();
+    } else {
+      errorMsg.textContent = data.message || 'Login failed';
+    }
+  } catch (err) {
+    console.error('Login Error:', err);
+    errorMsg.textContent = 'Error connecting to server.';
+  }
+});
+
+// ------------------- Load Contact Queries -------------------
+async function loadContactQueries() {
+  const container = document.getElementById('contactQueriesList');
+  try {
+    const res = await fetch('/api/contacts');
+    const queries = await res.json();
+
+    if (!Array.isArray(queries) || queries.length === 0) {
+      container.innerHTML = '<p>No contact queries available.</p>';
+      return;
+    }
+
+    let html = `<table class="order-table"><thead><tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th> <th>Subject</th> <th>Message</th>
+      <th>Date</th>
+    </tr></thead><tbody>`;
+
+    queries.forEach(q => {
+      // Use 'submitted_at' directly from your backend for the date
+      // Check if submitted_at exists before trying to create a Date object
+      const date = q.submitted_at ? new Date(q.submitted_at).toLocaleString() : 'N/A';
+
+      html += `<tr>
+        <td>${q.id || 'N/A'}</td>      <td>${q.name || 'N/A'}</td>    <td>${q.email || 'N/A'}</td>   <td>${q.phone || 'N/A'}</td>   <td>${q.subject || 'N/A'}</td> <td>${q.message || 'N/A'}</td> <td>${date}</td>
+      </tr>`;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+  } catch (err) {
+    console.error('Failed to load contact queries:', err);
+    container.innerHTML = '<p>Error loading contact queries.</p>';
+  }
+}
+
+// ------------------- CATEGORY DROPDOWN -------------------
+async function populateCategoryDropdown() {
+  try {
+    const res = await fetch('/api/categories');
+    const categories = await res.json();
+    const dropdown = document.getElementById('prodCategoryDropdown');
+
+    dropdown.innerHTML = `<option value="">-- Select Category --</option>`;
+    categories.forEach(cat => {
+      const option = document.createElement('option');
+      option.value = cat.Name;
+      option.textContent = cat.Name;
+      dropdown.appendChild(option);
+    });
+  } catch (err) {
+    console.error('Category load error:', err);
+  }
+}
+
+// ------------------- ADD CATEGORY -------------------
+document.getElementById('categoryForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const name = document.getElementById('newCategory').value.trim();
+  const imageFile = document.getElementById('newCategoryImageFile').files[0];
+  const id = document.getElementById('editingCategoryId').value;
+  const msg = document.getElementById('categoryMsg');
+
+  if (!name || (!imageFile && !id)) {
+    msg.textContent = 'Please fill in all fields.';
+    return;
+  }
+
+  try {
+    let imageUrl = null;
+    if (imageFile) {
+      imageUrl = await uploadImage(imageFile); // Upload the image and get the URL
+    }
+
+    const method = id ? 'PUT' : 'POST';
+    const url = id ? `/api/categories/${id}` : '/api/categories';
+    const body = { name };
+    if (imageUrl) body.image = imageUrl;
+
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (res.ok) {
+      msg.textContent = id ? '✅ Category updated successfully.' : '✅ Category saved successfully.';
+      document.getElementById('categoryForm').reset();
+      document.getElementById('editingCategoryId').value = '';
+      populateCategoryDropdown();
+      loadCategories();
+    } else {
+      const errText = await res.text();
+      msg.textContent = '⚠️ ' + errText;
+    }
+  } catch (err) {
+    console.error('Error:', err);
+    msg.textContent = '❌ Error saving category.';
+  }
+});
+
+
+// ------------------- ADD PRODUCT -------------------
+
+  // ✅ Upload image to Azure Blob
+  async function uploadImage(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error('Upload failed');
+    return data.url;
+  }
+  // Then modify your productForm submit handler to use it like this:
+  document.getElementById('productForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById('prodName').value.trim();
+    const price = parseFloat(document.getElementById('prodPrice').value);
+    const imageFile = document.getElementById('prodImageFile').files[0];
+    const category = document.getElementById('prodCategoryDropdown').value || document.getElementById('customCategoryInput').value;
+    const id = document.getElementById('editingProductId').value;
+    const msg = document.getElementById('uploadMsg');
+
+    if (!name || isNaN(price) || !imageFile || !category) {
+      msg.textContent = 'Please fill in all fields.';
+      return;
+    }
+
+    try {
+      const imageUrl = await uploadImage(imageFile);
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `/api/products/${id}` : '/api/products';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, price, image: imageUrl, category })
+      });
+
+      if (res.ok) {
+        msg.textContent = id ? '✅ Product updated successfully.' : '✅ Product saved successfully.';
+        document.getElementById('productForm').reset();
+        document.getElementById('editingProductId').value = '';
+        loadProducts();
+      } else {
+        msg.textContent = '⚠️ Failed to save product.';
+      }
+    } catch (err) {
+      console.error('Product error:', err);
+      msg.textContent = '❌ Error saving product.';
+    }
+  });
+
+// ------------------- FORM TOGGLE -------------------
+function toggleForm(id) {
+  document.querySelectorAll('.toggle-form').forEach(form => {
+    if (form.id !== id) {
+      form.classList.add('hidden');
+    }
+  });
+
+  const target = document.getElementById(id);
+  const isVisible = !target.classList.contains('hidden');
+  target.classList.toggle('hidden', isVisible);
+
+  document.querySelectorAll('.success-msg').forEach(m => m.textContent = '');
+}
+
+// ------------------- SECTION TOGGLE -------------------
+function toggleSection(id) {
+  document.querySelectorAll('.toggle-form').forEach(section => {
+    if (section.id !== id) section.classList.add('hidden');
+  });
+
+  const box = document.getElementById(id);
+  const isVisible = !box.classList.contains('hidden');
+  box.classList.toggle('hidden', isVisible);
+
+  if (!isVisible) {
+    if (id === 'manageCategoriesBox') loadCategories();
+    if (id === 'manageProductsBox') loadProducts();
+    if (id === 'orderViewer') loadOrders();
+    if (id === 'contactQueriesBox') loadContactQueries();
+  }
+
+  document.querySelectorAll('.success-msg').forEach(m => m.textContent = '');
+}
+
+// ------------------- LOAD CATEGORIES -------------------
+async function loadCategories() {
+  try {
+    const res = await fetch('/api/categories');
+    const categories = await res.json();
+    const list = document.getElementById('categoryList');
+
+    list.innerHTML = `
+      <div class="category-item" style="font-weight: bold; background-color: #eee;">
+        <div>Name</div>
+        <div>Image</div>
+        <div>Actions</div>
+      </div>
+    `;
+
+    categories.forEach(cat => {
+      const div = document.createElement('div');
+      div.className = 'category-item';
+      div.innerHTML = `
+        <div>${cat.Name}</div>
+        <div><img src="${cat.ImageURL}" alt="Category Image" style="width:40px;height:40px;"></div>
+        <div>
+          <button onclick="editCategory('${cat.Name}', '${cat.ImageURL}', ${cat.Id})">✏️ Edit</button>
+          <button onclick="deleteCategory(${cat.Id})">❌ Delete</button>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  } catch (err) {
+    console.error('Failed to load categories:', err);
+  }
+}
+
+function editCategory(name, imageURL, id) {
+  toggleForm('categoryFormBox');
+  document.getElementById('newCategory').value = name;
+  document.getElementById('newCategoryImage').value = imageURL;
+  document.getElementById('editingCategoryId').value = id;
+}
+
+// ------------------- LOAD PRODUCTS -------------------
+async function loadProducts() {
+  try {
+    const res = await fetch('/api/products');
+    const products = await res.json();
+    const list = document.getElementById('productList');
+
+    list.innerHTML = `
+      <div class="product-item" style="font-weight: bold; background-color: #eee;">
+        <div>Name</div>
+        <div>Price</div>
+        <div>Category</div>
+        <div>Image</div>
+        <div>Actions</div>
+      </div>
+    `;
+
+    products.forEach(prod => {
+      const div = document.createElement('div');
+      div.className = 'product-item';
+      div.innerHTML = `
+        <div>${prod.Name}</div>
+        <div>₹${prod.Price}</div>
+        <div>${prod.Category}</div>
+        <div><img src="${prod.ImageURL}" alt="Product Image" style="width:40px;height:40px;"></div>
+        <div>
+          <button onclick="editProduct(${prod.Id}, '${prod.Name}', ${prod.Price}, '${prod.Category}', '${prod.ImageURL}')">✏️ Edit</button>
+          <button onclick="deleteProduct(${prod.Id})">❌ Delete</button>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  } catch (err) {
+    console.error('Failed to load products:', err);
+  }
+}
+
+function editProduct(id, name, price, category, imageURL) {
+  toggleForm('productFormBox');
+  document.getElementById('prodName').value = name;
+  document.getElementById('prodPrice').value = price;
+  document.getElementById('prodImage').value = imageURL;
+  document.getElementById('editingProductId').value = id;
+
+  const dropdown = document.getElementById('prodCategoryDropdown');
+  const customInput = document.getElementById('customCategoryInput');
+  const dropdownOption = Array.from(dropdown.options).find(opt => opt.value === category);
+
+  if (dropdownOption) {
+    dropdown.value = category;
+    customInput.classList.add('hidden');
+  } else {
+    dropdown.value = '';
+    customInput.value = category;
+    customInput.classList.remove('hidden');
+  }
+}
+
+// ------------------- DELETE CATEGORY -------------------
+async function deleteCategory(id) {
+  if (!confirm('Are you sure you want to delete this category?')) return;
+  try {
+    await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+    loadCategories();
+    populateCategoryDropdown();
+  } catch (err) {
+    alert('Failed to delete category');
+  }
+}
+
+// ------------------- DELETE PRODUCT -------------------
+async function deleteProduct(id) {
+  if (!confirm('Are you sure you want to delete this product?')) return;
+  try {
+    await fetch(`/api/products/${id}`, { method: 'DELETE' });
+    loadProducts();
+  } catch (err) {
+    alert('Failed to delete product');
+  }
+}
+
+// ------------------- LOAD ORDERS -------------------
+async function loadOrders() {
+  const box = document.getElementById('orderViewer');
+  try {
+    const res = await fetch('/api/orders');
+    const orders = await res.json();
+
+    if (!Array.isArray(orders) || orders.length === 0) {
+      box.innerHTML = '<p>No orders available.</p>';
+      return;
+    }
+
+    let html = `<table class="order-table"><thead><tr>
+      <th>ID</th>
+      <th>Customer</th>
+      <th>Email</th>
+      <th>Total</th>
+      <th>Items</th>
+    </tr></thead><tbody>`;
+
+    orders.forEach(order => {
+      const itemsList = order.Items.map(i =>
+        `${i.ProductName} (x${i.Quantity}) - ₹${(i.Subtotal ?? 0).toFixed(2)}`
+      ).join('<br>');
+
+      html += `<tr>
+        <td>${order.Id}</td>
+        <td>${order.CustomerName || 'N/A'}</td>
+        <td>${order.Email || 'N/A'}</td>
+        <td>₹${(order.TotalAmount ?? 0).toFixed(2)}</td>
+        <td>${itemsList}</td>
+      </tr>`;
+    });
+
+    html += `</tbody></table>`;
+    box.innerHTML = html;
+
+  } catch (err) {
+    box.innerHTML = '<p style="color:red;">Failed to load orders.</p>';
+    console.error('Order load error:', err);
+  }
+}
+
+// ------------------- Load Dashboard Stats -------------------
+async function loadDashboardStats() {
+  try {
+    const res = await fetch('/api/stats');
+    const stats = await res.json();
+
+    document.getElementById('totalProducts').textContent = stats.totalProducts;
+    document.getElementById('totalCategories').textContent = stats.totalCategories;
+    document.getElementById('totalOrders').textContent = stats.totalOrders;
+    document.getElementById('totalVisitors').textContent = stats.totalVisitors;
+  } catch (err) {
+    console.error('Dashboard stat load failed:', err);
+  }
+}
+
+// ------------------- LOGOUT -------------------
+function logout() {
+  document.getElementById('adminPannel').classList.add('hidden');
+  document.getElementById('loginBox').classList.remove('hidden');
+  document.getElementById('adminLoginContainer').classList.remove('hidden');
+  document.getElementById('contactQueriesList').innerHTML = '';
+
+    // 🔒 Hide all toggle-form sections
+  document.querySelectorAll('.toggle-form').forEach(sec => sec.classList.add('hidden'));
+
+  // ✅ Clear success messages
+  document.querySelectorAll('.success-msg').forEach(m => m.textContent = '');
+
+  // 🔑 Clear login fields
+  document.getElementById('adminUsername').value = '';
+  document.getElementById('adminPassword').value = '';
+  document.getElementById('loginError').textContent = '';
+}
+
+</script>
+</body>
+</html>

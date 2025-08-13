@@ -1,0 +1,251 @@
+/* index.css */
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  color: #333;
+  overflow-x: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom right, #f4f4f4, #887865);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Header */
+header {
+  width: 100%;
+  background-color: #241b1b;
+  color: white;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1001;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 50px;
+  object-fit: contain;
+}
+
+.logo h2 {
+  margin-left: 15px;
+  font-size: 22px;
+}
+
+/* Hamburger Button */
+.menu-toggle {
+  display: block;
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 1002;
+}
+
+/* Slide-in Navigation */
+#mobile-nav {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 250px;
+  height: 100%;
+  background-color: #241b1b;
+  transition: right 0.3s ease-in-out;
+  padding-top: 80px;
+  z-index: 1000;
+}
+
+#mobile-nav.active {
+  right: 0;
+}
+
+/* Nav Menu Links */
+.nav-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
+}
+
+.nav-menu li {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.nav-menu a,
+.nav-btn {
+  width: 90%;
+  display: block;
+  padding: 12px 16px;
+  font-size: 16px;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 4px;
+  background: #887865;
+  transition: background 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: #dad1ca;
+  cursor: pointer;
+}
+
+/* Search bar inside nav */
+.search-wrapper {
+  width: 100%;
+  padding: 0 10px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}
+
+#mobile-nav .search-group {
+  display: flex;
+  width: 100%;
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 40px;
+}
+
+#mobile-nav .search-group input {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+#mobile-nav .search-group button {
+  width: 40px;
+  border: none;
+  background: #ddd;
+  cursor: pointer;
+}
+
+#mobile-nav .search-group button:hover {
+  background-color: #bbb;
+}
+
+/* Cart badge */
+#cart-count {
+  background: #887865;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+/* Hero Section */
+#hero-section {
+  flex: 1;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  align-items: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+}
+
+#hero-section h3 {
+  font-size: 36px;
+  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  padding: 20px 40px;
+  border-radius: 10px;
+}
+
+/* Carousel */
+.carousel-wrapper {
+  width: 90%;
+  max-width: 350px;
+  height: 350px;
+  margin: 40px auto;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-track {
+  display: flex;
+  width: calc(350px * 8);
+  animation: scrollImages 20s linear infinite;
+}
+
+.carousel-track img {
+  width: 350px;
+  height: 350px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border-radius: 10px;
+}
+
+@keyframes scrollImages {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-1400px); }
+}
+
+/* Footer */
+footer {
+  background: #241b1b;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.social-media {
+  margin-top: 10px;
+}
+
+.social-media a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.social-media a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .nav-menu {
+    display: none;
+  }
+
+  #mobile-nav.active .nav-menu {
+    display: flex;
+  }
+}

@@ -1,0 +1,229 @@
+/* ===============================
+   PRODUCT SECTION STYLES
+================================== */
+
+/* Main Container */
+.scrollable-area {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Section Heading */
+#productHeading {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #241b1b;
+}
+
+/* ===============================
+   PRODUCT GRID & CARDS
+================================== */
+
+/* Grid Layout */
+.product-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  margin-top: 20px;
+}
+
+/* Individual Product Card */
+.product-card {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Image */
+.product-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Product Title */
+.product-card h3 {
+  margin: 10px 0 5px;
+}
+
+/* Product Description / Details */
+.product-card p {
+  margin: 4px 0;
+}
+
+/* Action Button */
+.product-card button {
+  background: #887865;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.product-card button:hover {
+  background: #dad1ca;
+}
+
+/* ===============================
+   VIEW ALL / SHOW ALL BUTTON
+================================== */
+
+.center-link {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.center-link a,
+.view-all-btn {
+  text-decoration: none;
+  padding: 10px 20px;
+  background-color: #241b1b;
+  color: white;
+  border-radius: 4px;
+  font-weight: bold;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+.center-link a:hover,
+.view-all-btn:hover {
+  background-color: #3a2e2e;
+}
+
+/* ===============================
+   RESPONSIVE STYLES
+================================== */
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  .product-card img {
+    height: 150px;
+  }
+
+  #productHeading {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    padding: 12px;
+  }
+
+  .product-card img {
+    height: 120px;
+  }
+
+  #productHeading {
+    font-size: 20px;
+  }
+
+  .product-card button {
+    padding: 6px 12px;
+  }
+
+  .center-link a,
+  .view-all-btn {
+    padding: 8px 16px;
+  }
+
+  .center-link {
+    margin-top: 20px;
+  }
+}
+
+/* ===============================
+   DARK MODE STYLES
+================================== */
+@media (prefers-color-scheme: dark) {
+  .scrollable-area {
+    background-color: #121212;
+    color: #e0e0e0;
+    padding: 15px;
+  }
+
+  #productHeading {
+    color: #e0e0e0;
+    font-size: 26px;
+  }
+
+  .product-card {
+    background: #1e1e1e;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 14px;
+  }
+
+  .product-card h3,
+  .product-card p {
+    color: #e0e0e0;
+  }
+
+  .product-card h3 {
+    font-size: 18px;
+  }
+
+  .product-card p {
+    font-size: 14px;
+  }
+
+  .product-card img {
+    filter: brightness(0.8);
+    height: 200px;
+  }
+
+  .product-card img:hover {
+    filter: brightness(1);
+  }
+
+  .product-card button {
+    background: #3a2e2e;
+    color: #e0e0e0;
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  .product-card button:hover {
+    background: #dad1ca;
+  }
+
+  .center-link {
+    margin-top: 30px;
+  }
+
+  .center-link a,
+  .view-all-btn {
+    background-color: #3a2e2e;
+    color: #e0e0e0;
+    font-size: 16px;
+    padding: 12px 20px;
+  }
+
+  .center-link a:hover,
+  .view-all-btn:hover {
+    background-color: #887865;
+  }
+
+  .product-grid {
+    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+/* ===============================
+   PRODUCT CARD HOVER EFFECTS
+================================== */
+.product-card:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease;
+}

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Craftyy Trendz</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="images/logo.jpg" alt="Craftyy Trendz Logo" />
+      </a>
+      <h2>THE CRAFTYY TRENDZ</h2>
+    </div>
+
+    <!-- Hamburger menu button -->
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <!-- Slide-out nav menu -->
+    <nav id="mobile-nav">
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-btn">Home</a></li>
+        <li><a href="products.html" class="nav-btn">All Products</a></li>
+        <li><a href="categories.html" class="nav-btn">Categories</a></li>
+        <li><a href="contact.html" class="nav-btn">Contact Us</a></li>
+        <li class="search-group">
+          <input type="text" id="searchInput" placeholder="Search products..." />
+          <button onclick="searchProducts()">🔍</button>
+        </li>
+        <li>
+          <a href="cart.html" class="nav-btn">🛒 Cart <span id="cart-count">0</span></a>
+        </li>
+        <li><a href="admin.html" class="nav-btn">👤 Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="hero-section" style="background-image: url('images/bg-main.png');">
+    <div class="tagline">
+      <h3>Craftyy Trendz - Your One-Stop Shop for All Things Trendy!</h3>
+    </div>
+    <div class="carousel-wrapper">
+      <div class="carousel-track">
+        <img src="images/bg1.jpg" alt="Image 1" />
+        <img src="images/bg2.jpg" alt="Image 2" />
+        <img src="images/bg3.jpg" alt="Image 3" />
+        <img src="images/bg4.jpg" alt="Image 4" />
+        <img src="images/bg1.jpg" alt="Image 1" />
+        <img src="images/bg2.jpg" alt="Image 2" />
+        <img src="images/bg3.jpg" alt="Image 3" />
+        <img src="images/bg4.jpg" alt="Image 4" />
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Craftyy Trendz. All rights reserved. | Developer: mohammadammar7406@gmail.com</p>
+      <div class="social-media">
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      const nav = document.getElementById("mobile-nav");
+      nav.classList.toggle("active");
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener("click", function (event) {
+      const menu = document.getElementById("mobile-nav");
+      const toggleBtn = document.querySelector(".menu-toggle");
+
+      const isClickInsideMenu = menu.contains(event.target);
+      const isClickOnToggle = toggleBtn.contains(event.target);
+
+      if (!isClickInsideMenu && !isClickOnToggle && menu.classList.contains("active")) {
+        menu.classList.remove("active");
+      }
+    });
+
+    fetch('/api/visitors', { method: 'POST' }).catch(err => console.error('Visitor track error:', err));
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const cartCount = document.getElementById("cart-count");
+      if (cartCount) cartCount.textContent = count;
+    }
+    updateCartCount();
+
+    function searchProducts() {
+      const input = document.getElementById("searchInput").value.trim();
+      if (input) {
+        window.location.href = `products.html?search=${encodeURIComponent(input)}`;
+      }
+    }
+
+    document.getElementById("searchInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        searchProducts();
+      }
+    });
+  </script>
+</body>
+</html>
